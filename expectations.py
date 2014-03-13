@@ -58,7 +58,7 @@ class NegativeHandler(object):
 
   def handle_failure(self):
     self.matcher.failure_message_when_negated
-    raise ExpectationNotMetError(self.matcher.failure_message)
+    raise ExpectationNotMetError(self.matcher.failure_message_when_negated)
 
 def expect(target):
   return Target(target)
