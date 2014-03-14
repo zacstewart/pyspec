@@ -3,8 +3,12 @@ import sys
 
 class World(object):
     def __init__(self):
+        self.reset()
+
+    def reset(self):
         self.context = Context()
         self.failures = []
+        self.errors = []
 
 
 class Context(object):
@@ -39,6 +43,7 @@ class context(object):
                 print ''
                 print context
                 print error
+            world.reset()
         return True
 
 
