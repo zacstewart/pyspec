@@ -1,4 +1,4 @@
-class ExpectationNotMetError(Exception):
+class ExpectationNotMetError(AssertionError):
     def __init__(self, message):
         self.message = message
 

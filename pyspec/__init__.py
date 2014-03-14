@@ -33,10 +33,12 @@ class context(object):
         world.context = world.context.parent
         if not world.context.parent:
             print '\n'
-            print '{0} failures'.format(len(world.failures))
-            for context, failure in world.failures:
+            print '{0} failures, {1} errors'\
+                .format(len(world.failures), len(world.errors))
+            for context, error in world.failures + world.errors:
+                print ''
                 print context
-                print failure
+                print error
         return True
 
 
@@ -52,11 +54,14 @@ class it(object):
         pass
 
     def __exit__(self, type, value, traceback):
-        if type is not None:
+        if type is None:
+            sys.stdout.write('.')
+        elif isinstance(value, AssertionError):
             world.failures.append((self.scenario_description, value))
             sys.stdout.write('F')
         else:
-            sys.stdout.write('.')
+            world.errors.append((self.scenario_description, value))
+            sys.stdout.write('E')
         return True
 
     @property
