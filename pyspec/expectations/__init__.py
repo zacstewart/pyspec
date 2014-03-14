@@ -73,38 +73,3 @@ def expect(target):
 
 def eq(expected):
   return EqualityMatcher(expected)
-
-if __name__ == '__main__':
-  # All this try..except would be the internals of a hypothetical pyspec-core
-
-  import sys
-
-  failures = []
-  try:
-    expect(1).to(eq(1))
-    sys.stdout.write('.')
-  except ExpectationNotMetError as failure:
-    failures.append(failure)
-    sys.stdout.write('F')
-  try:
-    expect(10).to(eq(55))
-    sys.stdout.write('.')
-  except ExpectationNotMetError as failure:
-    failures.append(failure)
-    sys.stdout.write('F')
-  try:
-    expect(3).not_to(eq(1000))
-    sys.stdout.write('.')
-  except ExpectationNotMetError as failure:
-    failures.append(failure)
-    sys.stdout.write('F')
-  try:
-    expect(3).not_to(eq(3))
-    sys.stdout.write('.')
-  except ExpectationNotMetError as failure:
-    failures.append(failure)
-    sys.stdout.write('F')
-
-  print ''
-  for failure in failures:
-    print failure
