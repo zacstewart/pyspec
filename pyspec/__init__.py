@@ -51,7 +51,7 @@ class description(context):
     pass
 
 
-class it(object):
+class specification(object):
     def __init__(self, description):
         self.description = description
 

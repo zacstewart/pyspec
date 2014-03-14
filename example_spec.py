@@ -1,5 +1,5 @@
 from pyspec.expectations import expect, eq
-from pyspec import description, context, it
+from pyspec import description, context, specification
 
 if __name__ == '__main__':
     class BrokenFizzBuzz(object):
@@ -27,17 +27,17 @@ if __name__ == '__main__':
         with description('.convert'):
 
             with context(15):
-                with it('returns fizzbuzz'):
+                with specification('returns fizzbuzz'):
                     expect(fizzbuzz.convert(15)).to(eq('fizzbuzz'))
 
             with context(3):
-                with it('returns fizz'):
+                with specification('returns fizz'):
                     expect(fizzbuzz.convert(3)).to(eq('fizz'))
 
             with context(5):
-                with it('returns buzz'):
+                with specification('returns buzz'):
                     expect(fizzbuzz.convert(5)).to(eq('buzz'))
 
             with context('some other integer'):
-                with it('returns the integer'):
+                with specification('returns the integer'):
                     expect(fizzbuzz.convert(some_integer)).to(eq(some_integer))
