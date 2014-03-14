@@ -3,6 +3,7 @@ import sys
 
 class World(object):
     def __init__(self):
+        self.context = Context()
         self.failures = []
 
 
@@ -23,14 +24,14 @@ class Context(object):
 
 class context(object):
     def __init__(self, description=None):
-        world.current_context = Context(world.current_context, description)
+        world.context = Context(world.context, description)
 
     def __enter__(self):
         pass
 
     def __exit__(self, type, value, traceback):
-        world.current_context = world.current_context.parent
-        if not world.current_context.parent:
+        world.context = world.context.parent
+        if not world.context.parent:
             print '\n'
             print '{0} failures'.format(len(world.failures))
             for context, failure in world.failures:
@@ -61,7 +62,6 @@ class it(object):
     @property
     def scenario_description(self):
         return "{0} {1}"\
-            .format(world.current_context.full_description, self.description)
+            .format(world.context.full_description, self.description)
 
 world = World()
-world.current_context = Context()
