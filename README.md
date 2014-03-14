@@ -1,11 +1,24 @@
-# PySpec Expectations
+# PySpec
 
 Express expected outcomes with examples.
 
 ```python
-expect(mug.contents).to(eq('coffee'))
+mug = Mug()
+with description(Mug):
+  with description('.fill')
+    with context('coffee'):
+      with it('fills the mugg with coffee'):
+        mug.fill('coffee')
+        expect(mug.contents).to(eq('coffee'))
 ```
 
 ## Try it out
 
-    python expectations.py
+    python example_spec.py
+    F.F.
+
+    2 failures
+    pyspec <class '__main__.BrokenFizzBuzz'> .convert 15 returns fizzbuzz
+    Expected fizz to be equal to fizzbuzz
+    pyspec <class '__main__.BrokenFizzBuzz'> .convert 5 returns buzz
+    Expected 5 to be equal to buzz
