@@ -5,11 +5,11 @@ Express expected outcomes with examples.
 ```python
 mug = Mug()
 with description(Mug):
-  with description('.fill')
-    with context('coffee'):
-      with it('fills the mugg with coffee'):
-        mug.fill('coffee')
-        expect(mug.contents).to(eq('coffee'))
+    with description('.fill')
+        with context('coffee'):
+            with it('fills the mugg with coffee'):
+                mug.fill('coffee')
+                expect(mug.contents).to(eq('coffee'))
 ```
 
 ## Try it out
