@@ -1,14 +1,31 @@
 import sys
 
 
-class World(object):
+class Suite(object):
     def __init__(self):
-        self.reset()
-
-    def reset(self):
         self.context = Context()
         self.failures = []
         self.errors = []
+
+    def report_success(self, specification):
+        sys.stdout.write('.')
+
+    def report_failure(self, specification, failure):
+        self.failures.append((specification.scenario_description, failure))
+        sys.stdout.write('F')
+
+    def report_error(self, specification, error):
+        self.errors.append((specification.scenario_description, error))
+        sys.stdout.write('E')
+
+    def report_results(self):
+        print '\n'
+        print '{0} failures, {1} errors'\
+            .format(len(self.failures), len(self.errors))
+        for context, error in self.failures + self.errors:
+            print ''
+            print context
+            print error
 
 
 class Context(object):
@@ -28,22 +45,13 @@ class Context(object):
 
 class context(object):
     def __init__(self, description=None):
-        world.context = Context(world.context, description)
+        suite.context = Context(suite.context, description)
 
     def __enter__(self):
         pass
 
     def __exit__(self, type, value, traceback):
-        world.context = world.context.parent
-        if not world.context.parent:
-            print '\n'
-            print '{0} failures, {1} errors'\
-                .format(len(world.failures), len(world.errors))
-            for context, error in world.failures + world.errors:
-                print ''
-                print context
-                print error
-            world.reset()
+        suite.context = suite.context.parent
         return True
 
 
@@ -60,18 +68,17 @@ class specification(object):
 
     def __exit__(self, type, value, traceback):
         if type is None:
-            sys.stdout.write('.')
+            suite.report_success(self)
         elif isinstance(value, AssertionError):
-            world.failures.append((self.scenario_description, value))
-            sys.stdout.write('F')
+            suite.report_failure(self, value)
         else:
-            world.errors.append((self.scenario_description, value))
-            sys.stdout.write('E')
+            suite.report_error(self, value)
         return True
 
     @property
     def scenario_description(self):
         return "{0} {1}"\
-            .format(world.context.full_description, self.description)
+            .format(suite.context.full_description, self.description)
 
-world = World()
+
+suite = Suite()
