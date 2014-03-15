@@ -7,7 +7,7 @@ mug = Mug()
 with description(Mug):
     with description('.fill')
         with context('coffee'):
-            with it('fills the mugg with coffee'):
+            with specification('fills the mugg with coffee'):
                 mug.fill('coffee')
                 expect(mug.contents).to(eq('coffee'))
 ```
