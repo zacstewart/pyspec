@@ -12,6 +12,18 @@ class ExpectationNotMetErrorTest(TestCase):
         self.assertEqual('foo', str(self.error))
 
 
+class MatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = Matcher('foo')
+
+    def test_matches(self):
+        self.assertRaises(NotImplementedError, self.matcher.matches, 'bar')
+        self.assertRaises(NotImplementedError, self.matcher.failure_message)
+        self.assertRaises(NotImplementedError,
+                          self.matcher.failure_message_when_negated)
+
+
 class EqualityMatcherTest(TestCase):
 
     def setUp(self):
