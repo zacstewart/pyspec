@@ -2,3 +2,4 @@
 /dist/
 /pyspec.egg-info/
 /htmlcov/
+/.coverage
