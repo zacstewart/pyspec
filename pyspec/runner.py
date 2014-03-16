@@ -21,7 +21,9 @@ def main(argv=None, prog=None, **kwargs):
     elif os.path.isfile(options.spec_path):
         execfile(options.spec_path)
     else:
-        print("Spec not found: {0}".format(options.spec_path))
+        pyspec.suite.print_line(
+            "Spec not found: {0}".format(options.spec_path))
+        return 1
 
     pyspec.suite.report_results()
 
