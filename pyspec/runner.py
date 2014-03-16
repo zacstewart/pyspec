@@ -25,3 +25,8 @@ def main(argv=None, prog=None, **kwargs):
         __import__(modulize(path))
 
     pyspec.suite.report_results()
+
+    if pyspec.suite.is_green():
+        return 0
+    else:
+        return 1

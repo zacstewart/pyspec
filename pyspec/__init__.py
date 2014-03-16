@@ -8,6 +8,9 @@ class Suite(object):
         self.errors = []
         self.out = out
 
+    def is_green(self):
+        return len(self.failures + self.errors) == 0
+
     def report_success(self, specification):
         self.out.write('.')
 

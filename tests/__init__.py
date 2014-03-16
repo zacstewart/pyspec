@@ -39,6 +39,32 @@ class SuiteTest(TestCase):
         out.write.assert_any_call('Foo bar\n')
         out.write.assert_any_call('Miserable error\n')
 
+    def test_is_green_after_reporting_a_success(self):
+        out = Mock()
+        suite = Suite(out=out)
+        suite.report_success(Mock())
+        self.assertTrue(suite.is_green())
+
+    def test_is_green_after_reporting_a_failure(self):
+        out = Mock()
+        suite = Suite(out=out)
+        suite.report_failure(Mock(), Mock())
+        self.assertFalse(suite.is_green())
+
+    def test_is_green_after_reporting_an_error(self):
+        out = Mock()
+        suite = Suite(out=out)
+        suite.report_error(Mock(), Mock())
+        self.assertFalse(suite.is_green())
+
+    def test_is_green_after_reporting_failures_errors_and_success(self):
+        out = Mock()
+        suite = Suite(out=out)
+        suite.report_failure(Mock(), Mock())
+        suite.report_error(Mock(), Mock())
+        suite.report_success(Mock())
+        self.assertFalse(suite.is_green())
+
 
 class ContextTest(TestCase):
 
