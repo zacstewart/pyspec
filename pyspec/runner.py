@@ -17,9 +17,9 @@ def main(argv=None, prog=None, **kwargs):
     if os.path.isdir(options.spec_path):
         for root, dirnames, filenames in os.walk(options.spec_path):
             for filename in fnmatch.filter(filenames, '*_spec.py'):
-                execfile(os.path.join(root, filename))
+                pyspec.run_spec(os.path.join(root, filename))
     elif os.path.isfile(options.spec_path):
-        execfile(options.spec_path)
+        pyspec.run_spec(options.spec_path)
     else:
         pyspec.suite.print_line(
             "Spec not found: {0}".format(options.spec_path))

@@ -88,4 +88,8 @@ class specification(object):
             .format(suite.context.full_description, self.description)
 
 
+def run_spec(filename):
+    exec(compile(open(filename, 'rb').read(), filename, 'exec'),
+         globals(), locals())
+
 suite = Suite()
