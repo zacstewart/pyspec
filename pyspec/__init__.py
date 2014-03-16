@@ -2,30 +2,34 @@ import sys
 
 
 class Suite(object):
-    def __init__(self):
+    def __init__(self, out=sys.stdout):
         self.context = Context()
         self.failures = []
         self.errors = []
+        self.out = out
 
     def report_success(self, specification):
-        sys.stdout.write('.')
+        self.out.write('.')
 
     def report_failure(self, specification, failure):
         self.failures.append((specification.scenario_description, failure))
-        sys.stdout.write('F')
+        self.out.write('F')
 
     def report_error(self, specification, error):
         self.errors.append((specification.scenario_description, error))
-        sys.stdout.write('E')
+        self.out.write('E')
 
     def report_results(self):
-        print '\n'
-        print '{0} failures, {1} errors'\
-            .format(len(self.failures), len(self.errors))
+        self.print_line('\n')
+        self.print_line('{0} failures, {1} errors'
+            .format(len(self.failures), len(self.errors)))
         for context, error in self.failures + self.errors:
-            print ''
-            print context
-            print error
+            self.print_line('')
+            self.print_line(context)
+            self.print_line(error)
+
+    def print_line(self, message=''):
+        self.out.write(str(message) + '\n')
 
 
 class Context(object):
