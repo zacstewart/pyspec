@@ -49,10 +49,10 @@ class Context(object):
 
 class context(object):
     def __init__(self, description=None):
-        suite.context = Context(suite.context, description)
+        self.description = description
 
     def __enter__(self):
-        pass
+        suite.context = Context(suite.context, self.description)
 
     def __exit__(self, type, value, traceback):
         suite.context = suite.context.parent
