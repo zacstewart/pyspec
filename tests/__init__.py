@@ -1,96 +1,40 @@
-from pyspec.expectations import *
+from pyspec import *
 from unittest import TestCase
-from mock import Mock, patch
+from mock import Mock, call
 
 
-class ExpectationNotMetErrorTest(TestCase):
+class SuiteTest(TestCase):
 
-    def setUp(self):
-        self.error = ExpectationNotMetError('foo')
+    def test_report_success(self):
+        out = Mock()
+        suite = Suite(out=out)
+        suite.report_success(Mock())
+        out.write.assert_called_with('.')
 
-    def test_string_conversion(self):
-        self.assertEqual('foo', str(self.error))
+    def test_report_failure(self):
+        out = Mock()
+        suite = Suite(out=out)
 
+        suite.report_failure(
+            Mock(scenario_description='Foo bar'),
+            AssertionError('Miserable failure'))
+        out.write.assert_called_with('F')
 
-class EqualityMatcherTest(TestCase):
+        suite.report_results()
+        out.write.assert_any_call('1 failures, 0 errors\n')
+        out.write.assert_any_call('Foo bar\n')
+        out.write.assert_any_call('Miserable failure\n')
 
-    def setUp(self):
-        self.matcher = EqualityMatcher('foo')
+    def test_report_error(self):
+        out = Mock()
+        suite = Suite(out=out)
 
-    def test_matches_with_an_equal_value(self):
-        self.assertTrue(self.matcher.matches('foo'))
-        self.assertEqual(
-            'Expected foo not to be equal to foo',
-            self.matcher.failure_message_when_negated)
+        suite.report_error(
+            Mock(scenario_description='Foo bar'),
+            Exception('Miserable error'))
+        out.write.assert_called_with('E')
 
-    def test_matches_with_an_inequal_value(self):
-        self.assertFalse(self.matcher.matches('bar'))
-        self.assertEqual(
-            'Expected bar to be equal to foo',
-            self.matcher.failure_message)
-
-
-class PositiveHandlerTest(TestCase):
-
-    def test_resolve_with_a_matching_matcher(self):
-        matcher = EqualityMatcher('foo')
-        handler = PositiveHandler('foo', matcher)
-        handler.resolve()
-
-    def test_resolve_with_a_non_matching_matcher(self):
-        matcher = EqualityMatcher('bar')
-        handler = PositiveHandler('foo', matcher)
-        self.assertRaises(ExpectationNotMetError, handler.resolve)
-
-
-class NegativeHandlerTest(TestCase):
-
-    def test_resolve_with_a_matching_matcher(self):
-        matcher = EqualityMatcher('foo')
-        handler = NegativeHandler('foo', matcher)
-        self.assertRaises(ExpectationNotMetError, handler.resolve)
-
-    def test_resolve_with_a_non_matching_matcher(self):
-        pass
-
-
-class TargetTest(TestCase):
-
-    def setUp(self):
-        self.target = Target('foo')
-
-    def test_to(self):
-        with patch('pyspec.expectations.PositiveHandler') as handler:
-            matcher = Mock()
-            instance = handler.return_value
-
-            self.target.to(matcher)
-
-            handler.assert_called_with('foo', matcher)
-            instance.resolve.assert_called_with()
-
-    def test_not_to(self):
-        with patch('pyspec.expectations.NegativeHandler') as handler:
-            matcher = Mock()
-            instance = handler.return_value
-
-            self.target.not_to(matcher)
-
-            handler.assert_called_with('foo', matcher)
-            self.target.not_to(Mock())
-            instance.resolve.assert_called_with()
-
-
-class ExpecationsIntegrationTest(TestCase):
-
-    def test_expect_equal_with_equal_value(self):
-        expect(1).to(eq(1))
-
-    def test_expect_not_equal_with_equal_value(self):
-        self.assertRaises(ExpectationNotMetError, expect(1).not_to, eq(1))
-
-    def test_expect_equal_with_inequal_value(self):
-        self.assertRaises(ExpectationNotMetError, expect(1).to, eq(2))
-
-    def test_expect_not_equal_with_inequal_value(self):
-        expect(1).not_to(eq(2))
+        suite.report_results()
+        out.write.assert_any_call('0 failures, 1 errors\n')
+        out.write.assert_any_call('Foo bar\n')
+        out.write.assert_any_call('Miserable error\n')
