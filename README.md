@@ -1,5 +1,7 @@
 # PySpec
 
+[![Build Status](https://travis-ci.org/zacstewart/pyspec.png)](https://travis-ci.org/zacstewart/pyspec)
+
 Express expected outcomes with examples.
 
 ```python
