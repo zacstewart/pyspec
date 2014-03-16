@@ -1,15 +1,6 @@
 from argparse import ArgumentParser
 from glob import glob
-import re
 import pyspec
-
-PYTHON_EXTENSION = re.compile('.py$')
-
-suite = pyspec.suite
-
-
-def modulize(filename):
-    return PYTHON_EXTENSION.sub('', filename)
 
 
 def main(argv=None, prog=None, **kwargs):
@@ -22,7 +13,7 @@ def main(argv=None, prog=None, **kwargs):
     options = parser.parse_args()
 
     for path in glob(options.specs_path):
-        __import__(modulize(path))
+        execfile(path)
 
     pyspec.suite.report_results()
 
