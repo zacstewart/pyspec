@@ -59,7 +59,6 @@ class context(object):
 
     def __exit__(self, type, value, traceback):
         suite.context = suite.context.parent
-        return True
 
 
 class description(context):
