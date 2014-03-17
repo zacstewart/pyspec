@@ -45,9 +45,8 @@ class PositiveHandler(object):
         self.matcher = matcher
 
     def resolve(self):
-        if self.matcher.matches(self.actual):
-            return
-        self.handle_failure()
+        if not self.matcher.matches(self.actual):
+            self.handle_failure()
 
     def handle_failure(self):
         raise ExpectationNotMetError(self.matcher.failure_message)
@@ -59,9 +58,8 @@ class NegativeHandler(object):
         self.matcher = matcher
 
     def resolve(self):
-        if not self.matcher.matches(self.actual):
-            return
-        self.handle_failure()
+        if self.matcher.matches(self.actual):
+            self.handle_failure()
 
     def handle_failure(self):
         raise ExpectationNotMetError(self.matcher.failure_message_when_negated)
