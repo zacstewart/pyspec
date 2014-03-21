@@ -38,6 +38,13 @@ Passes if ``actual is expected``::
 
     expect(actual).to(be(expected))
 
+Comparison
+----------
+
+Passes if ``actual > expected``::
+
+    expected(actual).to(be_gt(expected))
+
 
 API
 ===
