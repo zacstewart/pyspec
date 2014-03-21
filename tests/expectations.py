@@ -42,6 +42,24 @@ class EqualityMatcherTest(TestCase):
             self.matcher.failure_message)
 
 
+class IdentityMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = IdentityMatcher(None)
+
+    def test_matches_with_an_identical_object(self):
+        self.assertTrue(self.matcher.matches(None))
+        self.assertEqual(
+            'Expected None not to be None',
+            self.matcher.failure_message_when_negated)
+
+    def test_matches_with_an_inequal_value(self):
+        self.assertFalse(self.matcher.matches(False))
+        self.assertEqual(
+            'Expected False to be None',
+            self.matcher.failure_message)
+
+
 class PositiveHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
@@ -106,3 +124,25 @@ class ExpecationsIntegrationTest(TestCase):
 
     def test_expect_not_equal_with_inequal_value(self):
         expect(1).not_to(eq(2))
+
+    def test_expect_to_be_with_identical_object(self):
+        obj = object()
+        same_obj = obj
+        expect(obj).to(be(same_obj))
+
+    def test_expect_not_to_be_with_identical_object(self):
+        obj = object()
+        same_obj = obj
+        self.assertRaises(ExpectationNotMetError,
+                          expect(obj).not_to, be(same_obj))
+
+    def test_expect_to_be_with_non_identical_object(self):
+        obj = object()
+        other_obj = object()
+        self.assertRaises(ExpectationNotMetError,
+                          expect(obj).to, be(other_obj))
+
+    def test_expect_not_to_be_with_non_identical_object(self):
+        obj = object()
+        other_obj = object()
+        expect(obj).not_to(be(other_obj))

@@ -31,6 +31,13 @@ Passes if ``actual == expected``::
 
     expect(actual).to(eq(expected))
 
+Object identity
+------------------
+
+Passes if ``actual is expected``::
+
+    expect(actual).to(be(expected))
+
 
 API
 ===

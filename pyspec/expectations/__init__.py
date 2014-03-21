@@ -51,6 +51,19 @@ class EqualityMatcher(Matcher):
             .format(self.actual, self.expected)
 
 
+class IdentityMatcher(Matcher):
+    def match(self, expected, actual):
+        return expected is actual
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be {1}".format(self.actual, self.expected)
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to be {1}".format(self.actual, self.expected)
+
+
 class PositiveHandler(object):
     """Used to resolve match of *actual* against *matcher* and propogate a
     failure if it does not."""
@@ -116,3 +129,9 @@ def eq(expected):
     """Tests equality of expected and actual."""
 
     return EqualityMatcher(expected)
+
+
+def be(expected):
+    """Tests identify of expected and actual."""
+
+    return IdentityMatcher(expected)
