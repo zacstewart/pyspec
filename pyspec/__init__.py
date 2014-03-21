@@ -1,4 +1,4 @@
-from core import Context, Suite
+from .core import Context, Suite
 
 
 class context(object):

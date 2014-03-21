@@ -1,4 +1,4 @@
-from matchers import *
+from .matchers import *
 
 
 class ExpectationNotMetError(AssertionError):
