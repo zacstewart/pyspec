@@ -60,6 +60,24 @@ class IdentityMatcherTest(TestCase):
             self.matcher.failure_message)
 
 
+class GreaterThanMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = GreaterThanMatcher(1)
+
+    def test_matches_with_a_greater_actual(self):
+        self.assertTrue(self.matcher.matches(2))
+        self.assertEqual(
+            'Expected 2 not to be > 1',
+            self.matcher.failure_message_when_negated)
+
+    def test_matches_with_a_lesser_actual(self):
+        self.assertFalse(self.matcher.matches(0))
+        self.assertEqual(
+            'Expected 0 to be > 1',
+            self.matcher.failure_message)
+
+
 class PositiveHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
@@ -146,3 +164,15 @@ class ExpecationsIntegrationTest(TestCase):
         obj = object()
         other_obj = object()
         expect(obj).not_to(be(other_obj))
+
+    def test_greater_than_with_greater_value(self):
+        expect(2).to(be_gt(1))
+
+    def test_greater_than_with_lesser_value(self):
+        self.assertRaises(ExpectationNotMetError, expect(0).to, be_gt(1))
+
+    def test_not_greater_than_with_greater_value(self):
+        self.assertRaises(ExpectationNotMetError, expect(2).not_to, be_gt(1))
+
+    def test_not_greater_than_with_lesser_value(self):
+        expect(0).not_to(be_gt(1))
