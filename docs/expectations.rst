@@ -51,8 +51,19 @@ Passes if ``actual < expected``::
 
 Passes if ``actual >= expected``::
 
-    expected(actual).to(be_gte(expected))
+    expect(actual).to(be_gte(expected))
 
+Passes if ``actual <= expected``::
+
+    expect(actual).to(be_lte(expected))
+
+Passes if ``(actual <= expected + delta) and (actual >= expected - delta)``::
+
+    expect(actual).to(be_within(delta).of(expected))
+
+Passes if ``re.match(pattern, actual) is not None``::
+
+    expect(actual).to(match(pattern))
 
 API
 ===
