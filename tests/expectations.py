@@ -170,6 +170,22 @@ class WithinDeltaMatcherTest(TestCase):
                          self.matcher.failure_message)
 
 
+class RegexMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = RegexMatcher('^[a-z]{6}$')
+
+    def test_match_foobar(self):
+        self.assertTrue(self.matcher.matches('foobar'))
+        self.assertEqual('Expected foobar not to match ^[a-z]{6}$',
+                         self.matcher.failure_message_when_negated)
+
+    def test_match_symbols(self):
+        self.assertFalse(self.matcher.matches('#$@#!'))
+        self.assertEqual('Expected #$@#! to match ^[a-z]{6}$',
+                         self.matcher.failure_message)
+
+
 class PositiveHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
@@ -289,3 +305,6 @@ class ExpecationsIntegrationTest(TestCase):
 
     def test_be_within_3_of_0(self):
         expect(2).to(be_within(3).of(0))
+
+    def test_expect_string_to_match_pattern(self):
+        expect('foobar').to(match(r'^[a-z]{6}$'))

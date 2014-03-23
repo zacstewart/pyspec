@@ -107,3 +107,8 @@ def be_lte(expected):
 def be_within(delta):
     """Tests that *actual* is within *delta* of *expected"""
     return WithinDeltaMatcher(delta)
+
+
+def match(pattern):
+    """Tests that *actual* matches *pattern*"""
+    return RegexMatcher(pattern)

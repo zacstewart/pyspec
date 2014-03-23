@@ -1,3 +1,6 @@
+import re
+
+
 class Matcher(object):
     """Abstract class for matchers. Must be subclassed."""
 
@@ -131,3 +134,18 @@ class WithinDeltaMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to be within {1} of {2}".format(
             self.actual, self.delta,  self.expected)
+
+
+class RegexMatcher(Matcher):
+    def match(self, pattern, actual):
+        return re.match(pattern, actual) is not None
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to match {1}".format(
+            self.actual, self.expected)
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to match {1}".format(
+            self.actual,  self.expected)
