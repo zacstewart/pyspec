@@ -66,3 +66,17 @@ class GreaterThanMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to be > {1}".format(
             self.actual, self.expected)
+
+
+class LessThanMatcher(Matcher):
+    def match(self, expected, actual):
+        return actual < expected
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be < {1}".format(self.actual, self.expected)
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to be < {1}".format(
+            self.actual, self.expected)
