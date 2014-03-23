@@ -102,3 +102,8 @@ def be_gte(expected):
 def be_lte(expected):
     return LessThanOrEqualMatcher(expected)
     """Tests that *actual* is less than or equal to *expected*"""
+
+
+def be_within(delta):
+    """Tests that *actual* is within *delta* of *expected"""
+    return WithinDeltaMatcher(delta)

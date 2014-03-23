@@ -144,6 +144,32 @@ class LessThanOrEqualMatcherTest(TestCase):
             self.matcher.failure_message_when_negated)
 
 
+class WithinDeltaMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = WithinDeltaMatcher(3)
+
+    def test_of_0_with_1(self):
+        self.assertTrue(self.matcher.of(0).matches(1))
+        self.assertEqual('Expected 1 not to be within 3 of 0',
+                         self.matcher.failure_message_when_negated)
+
+    def test_of_0_with_negative_1(self):
+        self.assertTrue(self.matcher.of(0).matches(-1))
+        self.assertEqual('Expected -1 not to be within 3 of 0',
+                         self.matcher.failure_message_when_negated)
+
+    def test_of_0_with_4(self):
+        self.assertFalse(self.matcher.of(0).matches(4))
+        self.assertEqual('Expected 4 to be within 3 of 0',
+                         self.matcher.failure_message)
+
+    def test_of_0_with_negative_4(self):
+        self.assertFalse(self.matcher.of(0).matches(-4))
+        self.assertEqual('Expected -4 to be within 3 of 0',
+                         self.matcher.failure_message)
+
+
 class PositiveHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
@@ -260,3 +286,6 @@ class ExpecationsIntegrationTest(TestCase):
 
     def test_less_than_or_equal_with_greater_value(self):
         expect(1).to(be_lte(2))
+
+    def test_be_within_3_of_0(self):
+        expect(2).to(be_within(3).of(0))

@@ -108,3 +108,26 @@ class LessThanOrEqualMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to be <= {1}".format(
             self.actual, self.expected)
+
+
+class WithinDeltaMatcher(Matcher):
+    def __init__(self, delta):
+        self.delta = delta
+
+    def of(self, expected):
+        self.expected = expected
+        return self
+
+    def match(self, expected, actual):
+        return expected <= actual + self.delta \
+            and expected >= actual - self.delta
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be within {1} of {2}".format(
+            self.actual, self.delta, self.expected)
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to be within {1} of {2}".format(
+            self.actual, self.delta,  self.expected)
