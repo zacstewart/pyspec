@@ -49,6 +49,10 @@ Passes if ``actual < expected``::
 
     expect(actual).to(be_lt(expected))
 
+Passes if ``actual >= expected``::
+
+    expected(actual).to(be_gte(expected))
+
 
 API
 ===

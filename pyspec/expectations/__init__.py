@@ -92,3 +92,8 @@ def be_gt(expected):
 def be_lt(expected):
     """Tests that *actual* is less than *expected*"""
     return LessThanMatcher(expected)
+
+
+def be_gte(expected):
+    """Tests that *actual* is greater than or equal to *expected*"""
+    return GreaterThanOrEqualMatcher(expected)
