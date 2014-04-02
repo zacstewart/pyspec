@@ -197,20 +197,20 @@ class InstanceOfMatcherTest(TestCase):
     def test_matches_expected_type(self):
         self.assertTrue(self.matcher.matches('foobar'))
         self.assertEqual(
-            "Expected 'foobar' not to be an instance of <type 'str'>",
+            "Expected 'foobar' not to be an instance of {0}".format(str),
             self.matcher.failure_message_when_negated)
 
     def test_matches_subclasses_of_expected_type(self):
         self.assertTrue(self.matcher.matches(self.DummyString('foobar')))
         self.assertEqual(
-            "Expected 'foobar' not to be an instance of <type 'str'>",
+            "Expected 'foobar' not to be an instance of {0}".format(str),
             self.matcher.failure_message_when_negated)
 
     def test_does_not_match_non_descendents(self):
         self.assertFalse(self.matcher.matches(['string', 'list']))
         self.assertEqual(
             "Expected ['string', 'list'] to be an instance "
-            "of <type 'str'>, not <type 'list'>",
+            "of {0}, not {1}".format(str, list),
             self.matcher.failure_message)
 
 
