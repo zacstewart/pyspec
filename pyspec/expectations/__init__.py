@@ -112,3 +112,9 @@ def be_within(delta):
 def match(pattern):
     """Tests that *actual* matches *pattern*"""
     return RegexMatcher(pattern)
+
+
+def be_an_instance_of(class_):
+    """Tests that *actual* is an instance of *expected* or a descendant
+    thereof"""
+    return InstanceOfMatcher(class_)

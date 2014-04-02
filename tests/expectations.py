@@ -186,6 +186,34 @@ class RegexMatcherTest(TestCase):
                          self.matcher.failure_message)
 
 
+class InstanceOfMatcherTest(TestCase):
+
+    class DummyString(str):
+        pass
+
+    def setUp(self):
+        self.matcher = InstanceOfMatcher(str)
+
+    def test_matches_expected_type(self):
+        self.assertTrue(self.matcher.matches('foobar'))
+        self.assertEqual(
+            "Expected 'foobar' not to be an instance of <type 'str'>",
+            self.matcher.failure_message_when_negated)
+
+    def test_matches_subclasses_of_expected_type(self):
+        self.assertTrue(self.matcher.matches(self.DummyString('foobar')))
+        self.assertEqual(
+            "Expected 'foobar' not to be an instance of <type 'str'>",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_non_descendents(self):
+        self.assertFalse(self.matcher.matches(['string', 'list']))
+        self.assertEqual(
+            "Expected ['string', 'list'] to be an instance "
+            "of <type 'str'>, not <type 'list'>",
+            self.matcher.failure_message)
+
+
 class PositiveHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
@@ -308,3 +336,6 @@ class ExpecationsIntegrationTest(TestCase):
 
     def test_expect_string_to_match_pattern(self):
         expect('foobar').to(match(r'^[a-z]{6}$'))
+
+    def test_expect_string_to_be_an_instance_of_str(self):
+        expect('foobar').to(be_an_instance_of(str))

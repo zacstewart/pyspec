@@ -149,3 +149,18 @@ class RegexMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to match {1}".format(
             self.actual,  self.expected)
+
+
+class InstanceOfMatcher(Matcher):
+    def match(self, expected, actual):
+        return isinstance(actual, expected)
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be an instance of {1}, not {2}".format(
+            repr(self.actual), repr(self.expected), repr(type(self.actual)))
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to be an instance of {1}".format(
+            repr(self.actual), repr(self.expected))

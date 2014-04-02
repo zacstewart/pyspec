@@ -65,6 +65,13 @@ Passes if ``re.match(pattern, actual) is not None``::
 
     expect(actual).to(match(pattern))
 
+Types and Classes
+-----------------
+
+Passes if ``isinstance(actual, expected)``::
+
+    expect(actual).to(be_an_instance_of(expected))
+
 API
 ===
 
