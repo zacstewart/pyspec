@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/zacstewart/pyspec.png)](https://travis-ci.org/zacstewart/pyspec)
 
+[Documentation](http://pyspec.readthedocs.org/)
+
 Express expected outcomes with examples.
 
 ```python
