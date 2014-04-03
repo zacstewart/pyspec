@@ -265,7 +265,7 @@ class TargetTest(TestCase):
             instance.resolve.assert_called_with()
 
 
-class ExpecationsIntegrationTest(TestCase):
+class ExpecationsSmokeTest(TestCase):
 
     def test_expect_equal_with_equal_value(self):
         expect(1).to(eq(1))
