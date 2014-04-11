@@ -72,6 +72,10 @@ Passes if ``isinstance(actual, expected)``::
 
     expect(actual).to(be_an_instance_of(expected))
 
+Passes if ``type(actual) is expected``::
+
+    expect(actual).to(be_of_type(expected))
+
 API
 ===
 
