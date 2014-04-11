@@ -164,3 +164,18 @@ class InstanceOfMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to be an instance of {1}".format(
             repr(self.actual), repr(self.expected))
+
+
+class OfTypeMatcher(Matcher):
+    def match(self, expected, actual):
+        return type(actual) is expected
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be of type {1}, not {2}".format(
+            repr(self.actual), repr(self.expected), repr(type(self.actual)))
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to be of type {1}".format(
+            repr(self.actual), repr(self.expected))

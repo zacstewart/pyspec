@@ -1,9 +1,10 @@
 from pyspec.expectations import ExpectationNotMetError
 from pyspec.expectations import Matcher, EqualityMatcher, IdentityMatcher, \
     GreaterThanMatcher, LessThanMatcher, GreaterThanOrEqualMatcher, \
-    LessThanOrEqualMatcher, WithinDeltaMatcher, RegexMatcher, InstanceOfMatcher
+    LessThanOrEqualMatcher, WithinDeltaMatcher, RegexMatcher, \
+    InstanceOfMatcher, OfTypeMatcher
 from pyspec.expectations import expect, eq, be, be_gt, be_lt, be_gte, be_lte, \
-    be_within, match, be_an_instance_of
+    be_within, match, be_an_instance_of, be_of_type
 from unittest import TestCase
 
 
@@ -209,6 +210,34 @@ class InstanceOfMatcherTest(TestCase):
             self.matcher.failure_message)
 
 
+class OfTypeMatcherTest(TestCase):
+
+    class DummyString(str):
+        pass
+
+    def setUp(self):
+        self.matcher = OfTypeMatcher(str)
+
+    def test_matches_an_instance_of_actual(self):
+        self.assertTrue(self.matcher.matches('foobar'))
+        self.assertEqual(
+            "Expected 'foobar' not to be of type {0}".format(str),
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_an_instance_of_subclass_of_actual(self):
+        self.assertFalse(self.matcher.matches(self.DummyString('foobar')))
+        self.assertEqual(
+            "Expected 'foobar' to be of type {0}, not {1}".format(
+                str, self.DummyString),
+            self.matcher.failure_message)
+
+    def test_does_not_match_an_instance_of_some_other_class(self):
+        self.assertFalse(self.matcher.matches(['foobar']))
+        self.assertEqual(
+            "Expected ['foobar'] to be of type {0}, not {1}".format(str, list),
+            self.matcher.failure_message)
+
+
 class ExpecationsSmokeTest(TestCase):
 
     def test_expect_equal_with_equal_value(self):
@@ -283,3 +312,6 @@ class ExpecationsSmokeTest(TestCase):
 
     def test_expect_string_to_be_an_instance_of_str(self):
         expect('foobar').to(be_an_instance_of(str))
+
+    def test_expect_string_be_of_type_str(self):
+        expect('foobar').to(be_of_type(str))

@@ -118,3 +118,8 @@ def be_an_instance_of(class_):
     """Tests that *actual* is an instance of *expected* or a descendant
     thereof"""
     return InstanceOfMatcher(class_)
+
+
+def be_of_type(type_):
+    """Tests that *actual* is specifically an instance of *expected*"""
+    return OfTypeMatcher(type_)
