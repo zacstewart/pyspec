@@ -2,9 +2,9 @@ from pyspec.expectations import ExpectationNotMetError
 from pyspec.expectations import Matcher, EqualityMatcher, IdentityMatcher, \
     GreaterThanMatcher, LessThanMatcher, GreaterThanOrEqualMatcher, \
     LessThanOrEqualMatcher, WithinDeltaMatcher, RegexMatcher, \
-    InstanceOfMatcher, OfTypeMatcher
+    InstanceOfMatcher, OfTypeMatcher, InclusionMatcher
 from pyspec.expectations import expect, eq, be, be_gt, be_lt, be_gte, be_lte, \
-    be_within, match, be_an_instance_of, be_of_type
+    be_within, match, be_an_instance_of, be_of_type, include
 from unittest import TestCase
 
 
@@ -238,6 +238,92 @@ class OfTypeMatcherTest(TestCase):
             self.matcher.failure_message)
 
 
+class InclusionMatcherWithSetTest(TestCase):
+
+    def setUp(self):
+        self.matcher = InclusionMatcher(['foo'])
+
+    def test_matches_a_set_including_actual(self):
+        self.assertTrue(self.matcher.matches(set(['foo', 'baz'])))
+        self.assertEqual(
+            "Expected foo not to be in set(['foo', 'baz'])",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_an_item_not_in_the_set(self):
+        self.assertFalse(self.matcher.matches(set(['bar', 'baz'])))
+        self.assertTrue(
+            ("Expected foo to be in set(['bar', 'baz'])" ==
+             self.matcher.failure_message) or
+            ("Expected foo to be in set(['baz', 'bar'])" ==
+             self.matcher.failure_message))
+
+
+class InclusionMatcherWithList(TestCase):
+
+    def setUp(self):
+        self.matcher = InclusionMatcher(['foo'])
+
+    def test_matches_a_list_including_actual(self):
+        self.assertTrue(self.matcher.matches(['foo', 'bar']))
+        self.assertEqual(
+            "Expected foo not to be in ['foo', 'bar']",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_an_item_not_in_the_list(self):
+        self.assertFalse(self.matcher.matches(['bar', 'baz']))
+        self.assertEqual(
+            "Expected foo to be in ['bar', 'baz']",
+            self.matcher.failure_message)
+
+    def test_does_not_match_if_any_items_are_not_in_the_list(self):
+        matcher = InclusionMatcher(['foo', 'baz'])
+        self.assertFalse(matcher.matches(['foo', 'bar']))
+        self.assertEqual(
+            "Expected baz to be in ['foo', 'bar']",
+            matcher.failure_message)
+
+
+class InclusionMatcherWithString(TestCase):
+
+    def setUp(self):
+        self.matcher = InclusionMatcher(['foo'])
+
+    def test_matches_a_substring(self):
+        self.assertTrue(self.matcher.matches('foobar'))
+        self.assertEqual(
+            "Expected foo not to be in foobar",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_a_non_substring(self):
+        self.assertFalse(self.matcher.matches('oof'))
+        self.assertEqual(
+            "Expected foo to be in oof",
+            self.matcher.failure_message)
+
+
+class InclusionMatcherWithDict(TestCase):
+
+    def setUp(self):
+        self.matcher = InclusionMatcher(['foo'])
+
+    def test_matches_a_dict_including_a_key_of_actual(self):
+        self.assertTrue(self.matcher.matches(dict(foo='quux')))
+        self.assertEqual(
+            "Expected foo not to be in {'foo': 'quux'}",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_an_item_not_in_the_dicts_keys(self):
+        self.assertFalse(self.matcher.matches(dict(bar='baz')))
+        self.assertEqual(
+            "Expected foo to be in {'bar': 'baz'}",
+            self.matcher.failure_message)
+
+    def test_matches_multiple_actuals(self):
+        matcher = InclusionMatcher(['foo', 'bar', 'baz'])
+        self.assertTrue(matcher.matches(dict(
+            foo='foo', bar='bar', baz='baz')))
+
+
 class ExpecationsSmokeTest(TestCase):
 
     def test_expect_equal_with_equal_value(self):
@@ -315,3 +401,9 @@ class ExpecationsSmokeTest(TestCase):
 
     def test_expect_string_be_of_type_str(self):
         expect('foobar').to(be_of_type(str))
+
+    def test_expect_member_to_be_in_list(self):
+        expect(['foo', 'bar', 'baz']).to(include('foo', 'baz'))
+
+    def test_expect_something_not_to_be_in_list(self):
+        expect(['foo', 'bar']).not_to(include('baz'))

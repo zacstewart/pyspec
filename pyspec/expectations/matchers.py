@@ -179,3 +179,22 @@ class OfTypeMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to be of type {1}".format(
             repr(self.actual), repr(self.expected))
+
+
+class InclusionMatcher(Matcher):
+    def match(self, expecteds, actual):
+        for expected in expecteds:
+            if not expected in actual:
+                self.missing = expected
+                return False
+            self.present = expected
+        return True
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be in {1}".format(self.missing, self.actual)
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to be in {1}".format(
+            self.present, self.actual)

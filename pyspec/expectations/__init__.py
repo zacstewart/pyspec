@@ -123,3 +123,8 @@ def be_an_instance_of(class_):
 def be_of_type(type_):
     """Tests that *actual* is specifically an instance of *expected*"""
     return OfTypeMatcher(type_)
+
+
+def include(*expecteds):
+    """Tests that *actual* is in *expected*"""
+    return InclusionMatcher(expecteds)

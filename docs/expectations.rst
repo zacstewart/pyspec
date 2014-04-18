@@ -76,6 +76,14 @@ Passes if ``type(actual) is expected``::
 
     expect(actual).to(be_of_type(expected))
 
+
+Lists and Collections
+---------------------
+
+Passes if ``expected in actual``::
+
+    expect(actual).to(include(expected))
+
 API
 ===
 
