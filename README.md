@@ -18,11 +18,22 @@ with description(Mug):
 
 ## Try it out
 
-    python example_spec.py
-    F.F.
+    git clone git@github.com:zacstewart/pyspec.git
+    cd pyspec
+    python setup.py install
+    pyspec example_specs/
+    F.F.E.F.
 
-    2 failures
-    pyspec <class '__main__.BrokenFizzBuzz'> .convert 15 returns fizzbuzz
+    3 failures, 1 errors
+
+    pyspec.core <class 'pyspec.core.BrokenFizzBuzz'> .convert 15 returns fizzbuzz
     Expected fizz to be equal to fizzbuzz
-    pyspec <class '__main__.BrokenFizzBuzz'> .convert 5 returns buzz
+
+    pyspec.core <class 'pyspec.core.BrokenFizzBuzz'> .convert 5 returns buzz
     Expected 5 to be equal to buzz
+
+    pyspec.core normal assertions are treated as failures and not errors
+    False wasn't True!
+
+    pyspec.core <class 'pyspec.core.BrokenFizzBuzz'> .floop does not exist
+    'BrokenFizzBuzz' object has no attribute 'floop'
