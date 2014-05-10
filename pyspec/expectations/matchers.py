@@ -7,9 +7,9 @@ class Matcher(object):
     def __init__(self, expected):
         self.expected = expected
 
-    def matches(self, actual):
+    def matches(self, actual, *args, **kwargs):
         self.actual = actual
-        return self.match(self.expected, self.actual)
+        return self.match(self.expected, self.actual, *args, **kwargs)
 
     def match(self, expected, actual):
         """Verifies match of *actual* against *expected*"""
@@ -224,3 +224,32 @@ class FalsyMatcher(Matcher):
     @property
     def failure_message_when_negated(self):
         return "Expected {0} to be truthy".format(repr(self.actual))
+
+
+class RaiseErrorMatcher(Matcher):
+    def match(self, expecteds, actual, *args, **kwargs):
+        self.error = None
+
+        try:
+            actual(*args, **kwargs)
+        except expecteds as error:
+            self.error = error
+            return True
+        except BaseException as error:
+            self.error = error
+
+        return False
+
+    @property
+    def failure_message(self):
+        if self.error:
+            return "Expected {0} to raise {1}, not {2}".format(
+                self.actual, self.expected, type(self.error))
+        else:
+            return "Expected {0} to raise {1}".format(
+                self.actual, self.expected)
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} not to raise {1}".format(
+            self.actual, self.expected)

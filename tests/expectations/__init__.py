@@ -17,12 +17,12 @@ class PositiveHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
         matcher = EqualityMatcher('foo')
-        handler = PositiveHandler('foo', matcher)
+        handler = PositiveHandler(matcher, 'foo')
         handler.resolve()
 
     def test_resolve_with_a_non_matching_matcher(self):
         matcher = EqualityMatcher('bar')
-        handler = PositiveHandler('foo', matcher)
+        handler = PositiveHandler(matcher, 'foo')
         self.assertRaises(ExpectationNotMetError, handler.resolve)
 
 
@@ -30,7 +30,7 @@ class NegativeHandlerTest(TestCase):
 
     def test_resolve_with_a_matching_matcher(self):
         matcher = EqualityMatcher('foo')
-        handler = NegativeHandler('foo', matcher)
+        handler = NegativeHandler(matcher, 'foo')
         self.assertRaises(ExpectationNotMetError, handler.resolve)
 
     def test_resolve_with_a_non_matching_matcher(self):
@@ -49,7 +49,7 @@ class TargetTest(TestCase):
 
             self.target.to(matcher)
 
-            handler.assert_called_with('foo', matcher)
+            handler.assert_called_with(matcher, 'foo')
             instance.resolve.assert_called_with()
 
     def test_not_to(self):
@@ -59,6 +59,5 @@ class TargetTest(TestCase):
 
             self.target.not_to(matcher)
 
-            handler.assert_called_with('foo', matcher)
-            self.target.not_to(Mock())
+            handler.assert_called_with(matcher, 'foo')
             instance.resolve.assert_called_with()

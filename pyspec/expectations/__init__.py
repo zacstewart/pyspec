@@ -15,15 +15,17 @@ class PositiveHandler(object):
     """Used to resolve match of *actual* against *matcher* and propogate a
     failure if it does not."""
 
-    def __init__(self, actual, matcher):
+    def __init__(self, matcher, actual, *args, **kwargs):
         self.actual = actual
         self.matcher = matcher
+        self.args = args
+        self.kwargs = kwargs
 
     def resolve(self):
         """Raises an ``ExpectationNotMetError`` error with *matcher*'s
         ``failure_message`` if *matcher* does not match *actual*."""
 
-        if not self.matcher.matches(self.actual):
+        if not self.matcher.matches(self.actual, *self.args, **self.kwargs):
             self.handle_failure()
 
     def handle_failure(self):
@@ -34,15 +36,17 @@ class NegativeHandler(object):
     """Used to resolve match of actual against a matcher and propogate a
     failure if it does."""
 
-    def __init__(self, actual, matcher):
+    def __init__(self, matcher, actual, *args, **kwargs):
         self.actual = actual
         self.matcher = matcher
+        self.args = args
+        self.kwargs = kwargs
 
     def resolve(self):
         """Raises an ``ExpectationNotMetError`` error with *matcher*'s
         ``failure_message_when_negated`` if *matcher* matches *actual*."""
 
-        if self.matcher.matches(self.actual):
+        if self.matcher.matches(self.actual, *self.args, **self.kwargs):
             self.handle_failure()
 
     def handle_failure(self):
@@ -52,24 +56,28 @@ class NegativeHandler(object):
 class Target(object):
     """Represents a value against which expectations may be tested."""
 
-    def __init__(self, target):
+    def __init__(self, target, *args, **kwargs):
         self.target = target
+        self.args = args
+        self.kwargs = kwargs
 
     def to(self, matcher):
         """Checks the positive case of an expectation being met."""
 
-        PositiveHandler(self.target, matcher).resolve()
+        PositiveHandler(
+            matcher, self.target, *self.args, **self.kwargs).resolve()
 
     def not_to(self, matcher):
         """Checks the negative case of an expectation being met."""
 
-        NegativeHandler(self.target, matcher).resolve()
+        NegativeHandler(
+            matcher, self.target, *self.args, **self.kwargs).resolve()
 
 
-def expect(target):
+def expect(target, *args, **kwargs):
     """Returns a :class:`Target` to test expectations against."""
 
-    return Target(target)
+    return Target(target, *args, **kwargs)
 
 
 def eq(expected):
@@ -138,3 +146,8 @@ def be_truthy():
 def be_falsy():
     """Tests that *actual* is falsy"""
     return FalsyMatcher(None)
+
+
+def raise_error(*expecteds):
+    """Tests that calling *actual* raises error"""
+    return RaiseErrorMatcher(expecteds)

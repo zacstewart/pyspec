@@ -94,6 +94,13 @@ Passes if ``expected in actual``::
 
     expect(actual).to(include(expected))
 
+Errors
+------
+
+Passes if ``calling actual raises expected``::
+
+    expect(callable_actual[, *arguments[, **kwargs]]).to(raise_error(expected))
+
 API
 ===
 

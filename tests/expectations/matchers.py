@@ -3,10 +3,10 @@ from pyspec.expectations import Matcher, EqualityMatcher, IdentityMatcher, \
     GreaterThanMatcher, LessThanMatcher, GreaterThanOrEqualMatcher, \
     LessThanOrEqualMatcher, WithinDeltaMatcher, RegexMatcher, \
     InstanceOfMatcher, OfTypeMatcher, InclusionMatcher, TruthyMatcher, \
-    FalsyMatcher
+    FalsyMatcher, RaiseErrorMatcher
 from pyspec.expectations import expect, eq, be, be_gt, be_lt, be_gte, be_lte, \
     be_within, match, be_an_instance_of, be_of_type, include, be_truthy, \
-    be_falsy
+    be_falsy, raise_error
 from unittest import TestCase
 
 
@@ -362,6 +362,36 @@ class FalsyMatcherTest(TestCase):
             self.matcher.failure_message)
 
 
+class RaiseErrorMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = RaiseErrorMatcher(IndexError)
+
+    def test_matchest_when_an_IndexError_is_raised(self):
+        callable_actual = [].pop
+        self.assertTrue(self.matcher.matches(callable_actual))
+        self.assertEqual(
+            "Expected {0} not to raise <type 'exceptions.IndexError'>".format(
+                callable_actual),
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_when_no_exception_is_raised(self):
+        callable_actual = [0].pop
+        self.assertFalse(self.matcher.matches(callable_actual))
+        self.assertEqual(
+            "Expected {0} to raise <type 'exceptions.IndexError'>".format(
+                callable_actual),
+            self.matcher.failure_message)
+
+    def test_does_not_match_when_a_different_exception_is_raised(self):
+        callable_actual = lambda: {}['foo']
+        self.assertFalse(self.matcher.matches(callable_actual))
+        self.assertEqual(
+            "Expected {0} to raise <type 'exceptions.IndexError'>, "
+            "not <type 'exceptions.KeyError'>".format(callable_actual),
+            self.matcher.failure_message)
+
+
 class ExpecationsSmokeTest(TestCase):
 
     def test_expect_equal_with_equal_value(self):
@@ -457,3 +487,87 @@ class ExpecationsSmokeTest(TestCase):
 
     def test_expect_string_not_to_be_falsy(self):
         expect('foo').not_to(be_falsy())
+
+    def test_expect_pop_from_empty_list_to_raise_IndexError(self):
+        expect([].pop).to(raise_error(IndexError))
+
+    def test_expect_pop_from_list_not_to_raise_IndexError(self):
+        expect([0].pop).not_to(raise_error(IndexError))
+
+    def test_expect_to_raise_error_can_take_callable_with_args(self):
+        class SpecialException(Exception):
+            pass
+
+        argument = object()
+
+        def callable_(x):
+            if x is argument:
+                raise SpecialException('foo')
+
+        expect(callable_, argument).to(raise_error(SpecialException))
+
+    def test_expect_not_to_raise_error_can_take_callable_with_args(self):
+        class SpecialException(Exception):
+            pass
+
+        argument = object()
+
+        def callable_(x):
+            if not x is argument:
+                raise SpecialException('foo')
+
+        expect(callable_, argument).not_to(raise_error(SpecialException))
+
+    def test_expect_to_raise_error_can_take_callable_with_kwargs(self):
+        class SpecialException(Exception):
+            pass
+
+        argument = object()
+        kwargs = dict(x=argument)
+
+        def callable_(x=None):
+            if x is argument:
+                raise SpecialException('foo')
+
+        expect(callable_, **kwargs).to(raise_error(SpecialException))
+
+    def test_expect_not_to_raise_error_can_take_callable_with_kwargs(self):
+        class SpecialException(Exception):
+            pass
+
+        argument = object()
+        kwargs = dict(x=argument)
+
+        def callable_(x=None):
+            if not x is argument:
+                raise SpecialException('foo')
+
+        expect(callable_, **kwargs).not_to(raise_error(SpecialException))
+
+    def test_expect_to_raise_error_can_take_callable_with_arg_and_kwargs(self):
+        class SpecialException(Exception):
+            pass
+
+        argument = object()
+        kwargs = dict(x=argument)
+
+        def callable_(arg, x=None):
+            if arg is argument and x is argument:
+                raise SpecialException('foo')
+
+        expect(callable_, argument, **kwargs).to(raise_error(SpecialException))
+
+    def test_expect_not_to_raise_error_can_take_callable_with_arg_and_kwargs(
+            self):
+        class SpecialException(Exception):
+            pass
+
+        argument = object()
+        kwargs = dict(x=argument)
+
+        def callable_(arg, x=None):
+            if not arg is argument or not x is argument:
+                raise SpecialException('foo')
+
+        expect(callable_, argument, **kwargs).not_to(
+            raise_error(SpecialException))
