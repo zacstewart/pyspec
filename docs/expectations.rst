@@ -76,6 +76,16 @@ Passes if ``type(actual) is expected``::
 
     expect(actual).to(be_of_type(expected))
 
+Truthiness, Falsiness, and Existentialism
+-----------------------------------------
+
+Passes if ``bool(actual)``::
+
+    expect(actual).to(be_truthy())
+
+Passes if ``not bool(actual)``::
+
+    expect(actual).to(be_falsy())
 
 Lists and Collections
 ---------------------

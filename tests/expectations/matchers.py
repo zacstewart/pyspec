@@ -2,9 +2,11 @@ from pyspec.expectations import ExpectationNotMetError
 from pyspec.expectations import Matcher, EqualityMatcher, IdentityMatcher, \
     GreaterThanMatcher, LessThanMatcher, GreaterThanOrEqualMatcher, \
     LessThanOrEqualMatcher, WithinDeltaMatcher, RegexMatcher, \
-    InstanceOfMatcher, OfTypeMatcher, InclusionMatcher
+    InstanceOfMatcher, OfTypeMatcher, InclusionMatcher, TruthyMatcher, \
+    FalsyMatcher
 from pyspec.expectations import expect, eq, be, be_gt, be_lt, be_gte, be_lte, \
-    be_within, match, be_an_instance_of, be_of_type, include
+    be_within, match, be_an_instance_of, be_of_type, include, be_truthy, \
+    be_falsy
 from unittest import TestCase
 
 
@@ -324,6 +326,42 @@ class InclusionMatcherWithDict(TestCase):
             foo='foo', bar='bar', baz='baz')))
 
 
+class TruthyMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = TruthyMatcher(None)
+
+    def test_matches_string(self):
+        self.assertTrue(self.matcher.matches('foo'))
+        self.assertEqual(
+            "Expected 'foo' to be falsy",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_empty_string(self):
+        self.assertFalse(self.matcher.matches(''))
+        self.assertEqual(
+            "Expected '' to be truthy",
+            self.matcher.failure_message)
+
+
+class FalsyMatcherTest(TestCase):
+
+    def setUp(self):
+        self.matcher = FalsyMatcher(None)
+
+    def test_matches_empty_string(self):
+        self.assertTrue(self.matcher.matches(''))
+        self.assertEqual(
+            "Expected '' to be truthy",
+            self.matcher.failure_message_when_negated)
+
+    def test_does_not_match_string(self):
+        self.assertFalse(self.matcher.matches('foo'))
+        self.assertEqual(
+            "Expected 'foo' to be falsy",
+            self.matcher.failure_message)
+
+
 class ExpecationsSmokeTest(TestCase):
 
     def test_expect_equal_with_equal_value(self):
@@ -407,3 +445,15 @@ class ExpecationsSmokeTest(TestCase):
 
     def test_expect_something_not_to_be_in_list(self):
         expect(['foo', 'bar']).not_to(include('baz'))
+
+    def test_expect_string_to_be_truthy(self):
+        expect('foo').to(be_truthy())
+
+    def test_expect_empty_string_not_to_be_truthy(self):
+        expect('').not_to(be_truthy())
+
+    def test_expect_empty_string_to_be_falsy(self):
+        expect('').to(be_falsy())
+
+    def test_expect_string_not_to_be_falsy(self):
+        expect('foo').not_to(be_falsy())

@@ -128,3 +128,13 @@ def be_of_type(type_):
 def include(*expecteds):
     """Tests that *actual* is in *expected*"""
     return InclusionMatcher(expecteds)
+
+
+def be_truthy():
+    """Tests that *actual* is truthy"""
+    return TruthyMatcher(None)
+
+
+def be_falsy():
+    """Tests that *actual* is falsy"""
+    return FalsyMatcher(None)

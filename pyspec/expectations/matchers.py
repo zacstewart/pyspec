@@ -198,3 +198,29 @@ class InclusionMatcher(Matcher):
     def failure_message_when_negated(self):
         return "Expected {0} not to be in {1}".format(
             self.present, self.actual)
+
+
+class TruthyMatcher(Matcher):
+    def match(self, _, actual):
+        return bool(actual)
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be truthy".format(repr(self.actual))
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} to be falsy".format(repr(self.actual))
+
+
+class FalsyMatcher(Matcher):
+    def match(self, _, actual):
+        return not bool(actual)
+
+    @property
+    def failure_message(self):
+        return "Expected {0} to be falsy".format(repr(self.actual))
+
+    @property
+    def failure_message_when_negated(self):
+        return "Expected {0} to be truthy".format(repr(self.actual))
